@@ -42,12 +42,30 @@ module.exports = function(grunt) {
 			// here goes html 2 sass conversion, magic
 			// BEGIN MAGIC
 			//===================================
-			 
-			 
+			 //var rePattern = new RegExp(/^Subject:(.*)$/);
+
+			//var arrMatches = strText.match(rePattern);
+			var allclasses = '';
+			var uniqueclasses = '';
+			allclasses = src.match(/(class="([^"]+)")/g).map(function(s){return s.replace(/class="|"/g, '')}).join(' ').split(' '); //tnx Egor Lvivski for this
+
+			uniqueclasses = allclasses.filter(function(elem, pos) {
+    				return allclasses.indexOf(elem) == pos;
+			});// removing duplicates
+
+			uniqueclasses.sort();//sorting
+
+			grunt.log.writeln(uniqueclasses); // works!
+
+			// @todo generate SASS file based on this
+
+
+
 			//===================================
 			 // END OF MAGIC
 			// Write the destination file.
-			grunt.file.write(f.dest, src);
+			// for now jus
+			grunt.file.write(f.dest, uniqueclasses);
 
 			// Print a success message.
 			grunt.log.writeln('File "' + f.dest + '" created.');
