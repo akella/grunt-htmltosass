@@ -54,20 +54,25 @@ module.exports = function(grunt) {
 			uniqueclasses.sort();//alphabet sorting
 
 
-			var currentdad, a;
+			var currentdad, a, s;
 			// @todo generate SASS file based on this
 			for (var i = 0; i < uniqueclasses.length; i++) {
-				currentdad = uniqueclasses[i];
+				s = uniqueclasses[i];
 				//sass += uniqueclasses[i]+'{}\n';
-				if(uniqueclasses[i].indexOf("__") != -1){
-					sass += '\t.' + uniqueclasses[i] + '{\n\t\n\t}\n'; // elements
+				if(s.indexOf("__") != -1 || s.indexOf("_") != -1){
+					if(s.indexOf("__") == -1 && s.indexOf("_") != -1){
+						sass += '\t&.' + s + '{\n\t\t\n\t}\n'; // modification
+					}
+					else{//this is element inside block
+						sass += '\t.' + s + '{\n\t\t\n\t}\n'; // element
+					}
 				}
 				else{
 					if(i!=0){a='}\n.';}
 					else{a='.';}
-					sass += a+uniqueclasses[i]+'{\n'; // block
+					sass += a+s+'{\n'; // block
 				}
-				//Do something
+				//Do something with modifications
 			}
 			sass += '}'; //last bracket
 			grunt.log.writeln(sass); // works!
