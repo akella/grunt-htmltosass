@@ -42,22 +42,35 @@ module.exports = function(grunt) {
 			// here goes html 2 sass conversion, magic
 			// BEGIN MAGIC
 			//===================================
-			 //var rePattern = new RegExp(/^Subject:(.*)$/);
-
-			//var arrMatches = strText.match(rePattern);
-			var allclasses = '';
-			var uniqueclasses = '';
+			var allclasses;
+			var uniqueclasses;
+			var sass = '';
 			allclasses = src.match(/(class="([^"]+)")/g).map(function(s){return s.replace(/class="|"/g, '')}).join(' ').split(' '); //tnx Egor Lvivski for this
 
 			uniqueclasses = allclasses.filter(function(elem, pos) {
-    				return allclasses.indexOf(elem) == pos;
+					return allclasses.indexOf(elem) == pos;
 			});// removing duplicates
 
-			uniqueclasses.sort();//sorting
+			uniqueclasses.sort();//alphabet sorting
 
-			grunt.log.writeln(uniqueclasses); // works!
 
+			var currentdad, a;
 			// @todo generate SASS file based on this
+			for (var i = 0; i < uniqueclasses.length; i++) {
+				currentdad = uniqueclasses[i];
+				//sass += uniqueclasses[i]+'{}\n';
+				if(uniqueclasses[i].indexOf("__") != -1){
+					sass += '\t.' + uniqueclasses[i] + '{\n\t\n\t}\n'; // elements
+				}
+				else{
+					if(i!=0){a='}\n.';}
+					else{a='.';}
+					sass += a+uniqueclasses[i]+'{\n'; // block
+				}
+				//Do something
+			}
+			sass += '}'; //last bracket
+			grunt.log.writeln(sass); // works!
 
 
 
@@ -65,7 +78,7 @@ module.exports = function(grunt) {
 			 // END OF MAGIC
 			// Write the destination file.
 			// for now jus
-			grunt.file.write(f.dest, uniqueclasses);
+			grunt.file.write(f.dest, sass);
 
 			// Print a success message.
 			grunt.log.writeln('File "' + f.dest + '" created.');
